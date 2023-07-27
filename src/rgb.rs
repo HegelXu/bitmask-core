@@ -704,6 +704,7 @@ pub async fn transfer_asset_with_rollback(
         )
     })?;
 
+    clear_stock_by_name(sk, ASSETS_STOCK_ROLLBACK).await;
     store_stock(sk, ASSETS_STOCK_ROLLBACK, &stock)
         .await
         .map_err(|_| {
@@ -720,6 +721,7 @@ pub async fn transfer_asset_with_rollback(
         )
     })?;
 
+    clear_wallet_by_name(sk, ASSETS_WALLETS_ROLLBACK).await;
     store_wallets(sk, ASSETS_WALLETS_ROLLBACK, &rgb_account)
         .await
         .map_err(|_| {
@@ -815,7 +817,7 @@ pub async fn rollback_transfer(sk: &str) -> Result<(), TransferError> {
         })?;
     clear_wallet_by_name(sk, ASSETS_WALLETS).await;
 
-    store_wallets(sk, ASSETS_WALLETS_ROLLBACK, &rgb_account)
+    store_wallets(sk, ASSETS_WALLETS, &rgb_account)
         .await
         .map_err(|_| {
             TransferError::Write(

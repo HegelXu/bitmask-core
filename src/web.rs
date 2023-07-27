@@ -425,6 +425,35 @@ pub mod rgb {
     }
 
     #[wasm_bindgen]
+    pub fn transfer_asset_with_rollback(nostr_hex_sk: String, request: JsValue) -> Promise {
+        set_panic_hook();
+
+        future_to_promise(async move {
+            let pay_req: RgbTransferRequest = serde_wasm_bindgen::from_value(request).unwrap();
+            match crate::rgb::transfer_asset(&nostr_hex_sk, pay_req).await {
+                Ok(result) => Ok(JsValue::from_string(
+                    serde_json::to_string(&result).unwrap(),
+                )),
+                Err(err) => Err(JsValue::from_string(err.to_string())),
+            }
+        })
+    }
+
+    #[wasm_bindgen]
+    pub fn rollback_transfer(nostr_hex_sk: String, request: JsValue) -> Promise {
+        set_panic_hook();
+
+        future_to_promise(async move {
+            match crate::rgb::rollback_transfer(&nostr_hex_sk).await {
+                Ok(result) => Ok(JsValue::from_string(
+                    serde_json::to_string(&result).unwrap(),
+                )),
+                Err(err) => Err(JsValue::from_string(err.to_string())),
+            }
+        })
+    }
+
+    #[wasm_bindgen]
     pub fn accept_transfer(nostr_hex_sk: String, request: JsValue) -> Promise {
         set_panic_hook();
 
